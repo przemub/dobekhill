@@ -39,7 +39,7 @@ def hprint(s, col=None, a=[], delay=0):
             time.sleep(delay*5)
         else:
             text = termcolor.colored(c, color,
-                    attrs=a + ['bold'] if bold else [])
+                    attrs=a + ['bold'] if bold else a)
             print(text, end="")
             count = count + 1
 
