@@ -137,10 +137,92 @@ class Wejście(Location):
         elif e == dirs["W"]:
             state.location = PrzedWejściem()
             return True
+        elif e == dirs["UP"]:
+            state.location = SekretariatHol()
+            return True
         return False
 
     items = [PanKsero, Straznik]
     directions = [ dirs["UP"], dirs["S"], dirs["W"], dirs["SE"] ]
+
+class SekretariatHol(Location):
+    name = "Hol przy sekretariacie"
+    desc = """Nad swoją głową możesz podziwiać listy miast i wsi, z których przyjechali uczniowie, a także krajów, do których rozjechali się po ukończeniu szkoły. W gablotach znajdują się informacje o najnowszych osiągnięciach twoich kolegów. Może ty też się kiedyś znajdziesz pośród nich…
+Na północy znajduje się główny hol, na południu sekretariat, a na górze gniazdo biol-chemu. Możesz też zejść po shodach do głównego wejścia."""
+
+    directions = [ dirs["N"], dirs["S"], dirs["UP"], dirs["DOWN"] ]
+ 
+    def move(self, state, e):
+        if e == dirs["N"]:
+            state.location = HolG1()
+            state.addTime(1)
+            return True
+        elif e == dirs["DOWN"]:
+            state.location = Wejście()
+            return True
+        return False
+
+class HolG(Location):
+    name = "Hol główny"
+    desc = """Znajdujesz się w korytarzu szerokim na 10 metrów, gdzie uczniowie w spokoju siedzą i wymieniają się poglądami… Haha, nie. Przez wielkie okna możesz pogardzać ludźmi, którym się chce biegać po boisku.
+"""
+
+class HolG1(HolG):
+    desc = HolG.desc + """Stąd możesz wejść do sali 8, 9 i po schodach do 10-11."""
+
+    directions = [ dirs["N"], dirs["S"], dirs["NE"], dirs["E"], dirs["UP"] ]
+
+    def move(self, state, e):
+        if e == dirs["N"]:
+            state.location = HolG2()
+            return True
+        elif e == dirs["S"]:
+            state.location = SekretariatHol()
+            return True
+        return False
+
+class HolG2(HolG):
+    desc = HolG.desc + """Stąd możesz wejść do sali 12, 13 i po schodach do 14-15."""
+
+    directions = [ dirs["N"], dirs["S"], dirs["NE"], dirs["E"], dirs["UP"] ]
+
+    def move(self, state, e):
+        if e == dirs["N"]:
+            state.location = HolWF()
+            return True
+        elif e == dirs["S"]:
+            state.location = HolG1()
+            return True
+        return False
+
+class HolWF(Location):
+    name = "Hol wuefistów"
+    desc = """Znajdujesz się na środkowym piętrze w samym środku szkoły, zaraz przy sali gimnastycznej na południu.W gablotach widoczne są dyplomy za osiągnięcia sportowe twoich rówieśników. No nic, w konkurencji pt. „szybkość pisania na klawiaturze to byś wygrał…
+Po schodach na górę jest gniazdo mat-infu, a na dół jest biblioteka."""
+
+    directions = [ dirs["W"], dirs["S"], dirs["UP"], dirs["DOWN"] ]
+
+    def move(self, state, e):
+        if e == dirs["S"]:
+            state.location = HolG2()
+            return True
+        elif e == dirs["UP"]:
+            state.location = GniazdoMI()
+            return True
+        return False
+
+class GniazdoMI(Location):
+    name = "Gniazdo mat-infu"
+    desc = """Zawędrowałeś w miejsce, które prawdziwie można zwać gniazdem mat-infu - znajduje się na piętrze i jako prawdziwy mat-inf czujesz się tu jak w domu. Gabloty wypełniają zadanka z OI-a i plakaty przedstawiające ludzi, którym się powiodło.
+Sale informatyczne znajdują się na południu i wschodzie. Sala F2 znajduje się na zachodzie, a czytelnia na północy."""
+
+    directions = [ dirs["N"], dirs["S"], dirs["W"], dirs["E"], dirs["DOWN"] ]
+
+    def move(self, state, e):
+        if e == dirs["DOWN"]:
+            state.location = HolWF()
+            return True
+        return False
 
 class PrzedWejściem(Location):
     name = "Przed wejściem głównym"
