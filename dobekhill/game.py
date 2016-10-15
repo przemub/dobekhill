@@ -2,8 +2,8 @@
 from helper import *
 from structs import *
 from locations import *
+from lessons import *
 
-import cmd
 import time
 import random
 import threading
@@ -20,13 +20,15 @@ class HillShell():
             self.desc()
             return
 
-        for item in self.s.location.items:
-            if item.name.mianownik.lower().startswith(arg[0].lower()):
-                if item.look:
-                    hprint(item.look + "\n")
-                else:
-                    hprint(item.desc + "\n")
-                return
+        for item in self.s.location.get_items():
+            names = [alias for alias in item.alias] + item.name.mianownik.split()
+            for name in names:
+                if name.lower().startswith(arg[0].lower()):
+                    if item.look:
+                        hprint(item.look + "\n")
+                    else:
+                        hprint(item.desc + "\n")
+                    return
         hprint("Nie ma takiego przedmiotu.\n")
 
     do_patrz.help = """Składnia: patrz
@@ -125,6 +127,12 @@ Składnia: pomoc
 Wyświetla pomoc powiązaną z podanym poleceniem lub listę poleceń.
 """
 
+    def do_debug(self, arg):
+        if len(arg) == 1:
+            self.s.time = int(arg[0])
+        elif len(arg) == 2:
+            self.s.time = ttm(int(arg[0]), int(arg[1]))
+
     def do_wyjdź(self, arg):
         hprint("Do zobaczenia w świecie Dobek Hill!\n")
         self.event.takZabijSie()
@@ -153,10 +161,8 @@ Wychodzi ze świata Dobek Hill.
                         self.state.location = ret[1]
                         self.state.addTime(ret[2])
                         self.game.desc()
-                    prompt = "(%02d:%02d %d%%hp %d%%dp) " % (self.state.hr,
-                            self.state.min, self.state.hp, self.state.dp)
-
-                    hprint(prompt, 'cyan')
+                    
+                    self.game.prompt()
                     sys.stdout.flush()
                     time.sleep(1)
 
@@ -175,7 +181,7 @@ Wychodzi ze świata Dobek Hill.
         self.event = self.EventThread(self.s, self)
         self.event.start()
 
-        if self.s.level == 1 and self.s.tutorial == 1:
+        if self.s.tutorial == 1:
             hprint('1 PAŹDZIERNIKA 2016\n\n', 'yellow', delay=0.15)
             hprint('Lament pierwszy: ', 'red', delay=0.15)
             time.sleep(1)
@@ -199,32 +205,45 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
             cont()
 
             self.s.location = Front()
+            self.s.level = Lament1()
             self.desc()
             self.loop()
 
     def desc(self):
         hprint(self.s.location.name+"\n", 'blue')
-        hprint("[Wyjścia: %s]\n" % ", ".join(self.s.location.directions), 'green')
+        
+        directions = ""
+        for direction, location in self.s.location.directions.items():
+            if len(location) >= 3 and not location[2]:
+                directions += "(%s), " % direction
+            else: 
+                directions += "%s, " % direction
+
+        hprint("[Wyjścia: %s]\n" % directions[:-2], 'green')
+        
         if len(self.s.location.actions) > 0:
             hprint("[Akcje: %s]\n" % ", ".join([a.name for a in self.s.location.actions]), 'yellow')
         hprint(self.s.location.desc + "\n")
 
-        for item in self.s.location.items:
+        for item in self.s.location.get_items():
             if item.list:
                 hprint("\t" + item.desc + "\n", 'green')
 
-        hprint("W sali nr 9 trwa lekcja matematyki.\n", 'magenta')
+        hprint(self.s.level.status(self.s) + "\n", 'magenta')
 
         print()
 
     class ExitException(Exception):
         pass
 
+    def prompt(self):
+        prompt = "(%02d:%02d %d%%hp %d%%dp) " % (self.s.time // 60, self.s.time % 60, self.s.hp, self.s.dp)
+        hprint(prompt, 'cyan')
+
     def loop(self):
         cont = True
         while cont:
-            prompt = "(%02d:%02d %d%%hp %d%%dp) " % (self.s.hr, self.s.min, self.s.hp, self.s.dp)
-            hprint(prompt, 'cyan')
+            self.prompt()
 
             comm = input()
             comm = comm.split()

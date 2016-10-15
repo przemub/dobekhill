@@ -8,18 +8,19 @@ class Player:
     slaby = None
 
 class State:
-    level = 1
+    level = None
 
     location = None
     tutorial = True
 
-    hr = 7
-    min = 47
+    time = 7*60+47
+    week = 1
+    weekday = 0
+
+    lesson = None
 
     def addTime(self, t):
-        self.min += t
-        self.hr += self.min // 60
-        self.min %= 60
+        self.time += t
 
     hp = 55
     dp = 34
@@ -33,8 +34,11 @@ class Noun:
     miejscownik = None
     wolacz = None
 
+    alias = None
+
     def __init__(self, m, d=None, b=None, c=None,
-                    n=None, msc=None, wol=None):
+                    n=None, msc=None, wol=None,
+                    alias=[]):
         self.mianownik = m
         self.dopelniacz = d if d else m
         self.biernik = b if b else m
@@ -42,6 +46,8 @@ class Noun:
         self.narzednik = n if n else m
         self.miejscownik = msc if msc else m
         self.wolacz = wol if wol else m
+
+        self.alias = m.split() + alias
 
     def __repr__(self):
         return self.mianownik
