@@ -1,41 +1,40 @@
 class Player:
-    imie = None
-    nazwisko = None
+    def __init__(self, default=False):
+        # Cechy
+        self.imie = Noun("Karol") if default else None
+        self.nazwisko = Noun("Baryła") if default else None
 
-    ulub = None 
-    uslab = None
-    mocny = None
-    slaby = None
+        self.ulub = "i" if default else None
+        self.uslab = "m" if default else None
+        self.mocny = "p" if default else None
+        self.slaby = "p" if default else None
+
+        # Statystyki
+        self.spoznienia = 0
+
 
 class State:
-    level = None
+    def __init__(self):
+        self.level = None
 
-    location = None
-    tutorial = True
+        self.location = None
+        self.tutorial = True
 
-    time = 7*60+47
-    week = 1
-    weekday = 0
+        self.time = 7*60+47
+        self.week = 1
+        self.weekday = 0
 
-    lesson = None
+        self.player = Player(True)
+        self.lesson = None
+
+        self.hp = 55
+        self.dp = 34
 
     def addTime(self, t):
         self.time += t
 
-    hp = 55
-    dp = 34
 
 class Noun:
-    mianownik = None
-    dopelniacz = None
-    biernik = None
-    celownik = None
-    narzednik = None
-    miejscownik = None
-    wolacz = None
-
-    alias = None
-
     def __init__(self, m, d=None, b=None, c=None,
                     n=None, msc=None, wol=None,
                     alias=[]):
