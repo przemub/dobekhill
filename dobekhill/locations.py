@@ -289,7 +289,7 @@ class Sala(Location):
             return False
 
         if state.lesson.exit(state):
-            Location.move(self, state, e)
+            return Location.move(self, state, e)
         else:
             return False
 

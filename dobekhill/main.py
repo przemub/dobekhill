@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from helper import *
-from structs import Player
+from structs import Player, Noun
 from game import HillShell
 
 HILL = """
@@ -36,9 +36,9 @@ def new():
     gracz = Player()
 
     hprint("Jak masz na imię? >")
-    gracz.imie = input()
+    gracz.imie = Noun(input())
     hprint("Jak się nazywasz? >")
-    gracz.nazwisko = input()
+    gracz.nazwisko = Noun(input())
     
     """wzrost = None
     while wzrost not in ('w', 'n', 'ś'):
@@ -69,7 +69,8 @@ def new():
     # Podsumowanie
 
     
-    hprint("\nNazywasz się *%s* *%s*.\n\n" % (gracz.imie, gracz.nazwisko))
+    hprint("\nNazywasz się *%s* *%s*.\n\n" %
+            (gracz.imie.mianownik, gracz.nazwisko.mianownik))
 
     if gracz.ulub == 'i':
         hprint("Od dziecka twoim marzeniem było zostać programistą w firmie tworzącej gry komputerowe. Formatowanie domowego komputera opanowałeś w wieku lat sześciu, a w swoim gimnazjum prowadziłeś szkolną stronę internetową. Olimpiada Informatyczna? Algorytmika? A co to takiego?\n\n")
