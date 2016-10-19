@@ -246,7 +246,9 @@ class Sala(Location):
         nr, dir, lesson = args
         self.nr = nr
         self.name += str(nr)
+        self.lesson = None
         if lesson:
+            self.lesson = lesson
             _set(lesson)
         self.directions = dir
 
@@ -259,6 +261,7 @@ class Sala(Location):
         teacher.desc = lesson.teacher_desc()
         teacher.look = lesson.teacher_look()
         self.ex_items = [teacher]
+        self.quote = lesson.quote
 
     def dyn_items(self):
         return self.ex_items
@@ -272,6 +275,13 @@ class Sala(Location):
         self._set(state.lesson)
 
         return False
+
+    def event(self):
+        if random.randint(1, 20) == random.randint(1, 20):
+            ret = self.quote()
+            return (ret, False)
+
+        return (False, False)
 
 class PrzedWejściem(Location):
     name = "Przed wejściem głównym"
