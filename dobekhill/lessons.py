@@ -21,6 +21,10 @@ class Matematyka(Lesson):
     def __init__(self, *args, **kwargs):
         Lesson.__init__(self, *args, **kwargs)
 
+    def teacher_look(self):
+        return """Widzisz łysygo człowieka o bujnej fryzurze. Blask jego majestatu oświetla twoje wewnętrze matematyczne oko, wykluczając je z dziedziny.
+Za uchem schowany ma krzywik, a z kieszeni wystaje okładka na której widnieje nieco starty napis *PAWŁOWSKI*."""
+
 
 class WF(Lesson):
     name = Noun("WF", "WF-u", n="WF-em")
@@ -29,6 +33,9 @@ class WF(Lesson):
     def __init__(self, *args, **kwargs):
         Lesson.__init__(self, *args, **kwargs)
 
+    def teacher_look(self):
+        return """Z całych sił próbujesz dostrzec charakterystyczne cechy najlepszego wuefisty, lecz jego prędkość względem twojej jest zbyt wysoka.
+(Interakcja z postacią jest niemożliwa.)"""
 
 class Historia(Lesson):
     name = Noun("historia", "historii", n="historią")
