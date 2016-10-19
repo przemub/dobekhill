@@ -95,7 +95,7 @@ def new():
         cont()
 
         shell = HillShell()
-        shell.player = gracz
+        shell.gracz = gracz
         shell.start()
 
 def main():

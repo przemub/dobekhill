@@ -1,5 +1,6 @@
 import termcolor
 
+import random
 import sys
 import time
 
@@ -9,6 +10,8 @@ def hprint(s, col=None, a=[], delay=0):
     count = 0
     color = col
     bold = False
+
+    delaylong = delay*5 if delay > 0 or SKIP else 0.5
 
     if SKIP:
         delay = 0
@@ -36,7 +39,8 @@ def hprint(s, col=None, a=[], delay=0):
             else:
                 color = col
         elif c == '^':
-            time.sleep(delay*5)
+            sys.stdout.flush()
+            time.sleep(delaylong)
         else:
             text = termcolor.colored(c, color,
                     attrs=a + ['bold'] if bold else a)
@@ -44,10 +48,13 @@ def hprint(s, col=None, a=[], delay=0):
             count = count + 1
 
         if delay != 0:
-            time.sleep(delay)
             sys.stdout.flush()
+            time.sleep(delay)
 
 def cont():
     print("[Naciśnij Enter, aby kontynuować]")
     input()
+
+def k100(prob):
+    return random.randint(0, 99) < prob
 

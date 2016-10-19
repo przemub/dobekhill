@@ -15,6 +15,9 @@ class Location:
     def closed(self, state):
         return False
 
+    def entered(self, state):
+        pass
+
     def dyn_items(self):
         return []
 
@@ -268,10 +271,24 @@ class Sala(Location):
             hprint("Drzwi są zamknięte. To oczywiste, w końcu nie masz tu lekcji!\n")
             return True
 
-        hprint("Otwierasz drzwi.\n")
+        hprint("Pukasz lekko i otwierasz drzwi.\n")
         self._set(state.lesson)
 
         return False
+
+    def entered(self, state):
+        hprint("Zamykasz drzwi.\n")
+        state.lesson.enter(state)
+
+    def move(self, state, e):
+        if not self.directions.get(e):
+            #hprint("Wyjście z sali jest gdzie indziej.\n")
+            return False
+
+        if state.lesson.exit(state):
+            Location.move(self, state, e)
+        else:
+            return False
 
 class PrzedWejściem(Location):
     name = "Przed wejściem głównym"

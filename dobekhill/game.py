@@ -10,7 +10,7 @@ import threading
 import sys
 
 class HillShell():
-    gracz = Player()
+    gracz = Player(True)
 
     commands = []
     s = None
@@ -39,6 +39,8 @@ Wyświetla opis pomieszczenia lub podanego przedmiotu.
     def move(self, dir):
         if self.s.location.move(self.s, dir):
             self.desc()
+            self.s.location.entered(self.s)
+            print()
         else:
             hprint("Nie ma wyjścia w tym kierunku.\n")
 
@@ -175,6 +177,8 @@ Wychodzi ze świata Dobek Hill.
         self.commands = [func for func in dir(self)
                 if callable(getattr(self, func)) and func[:3] == "do_"]
         self.s = state
+        
+        self.s.player = self.gracz
 
         random.seed()
 
@@ -230,8 +234,6 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
                 hprint("\t" + item.desc + "\n", 'green')
 
         hprint(self.s.level.status(self.s) + "\n", 'magenta')
-
-        print()
 
     class ExitException(Exception):
         pass

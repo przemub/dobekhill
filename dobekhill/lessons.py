@@ -1,17 +1,48 @@
 from structs import Noun
+from helper import hprint, k100
 
 import bisect
+import random
 
 class Lesson:
     def __init__(self, *args, **kwargs):
         self.classroom = args[0]
         self.length = args[1]
+        self.start = args[2]
+        self.random = random.randint(0, 4)
+        # Prawdopodobieństwo wpisania spóźnienia
+        self.late = 100
 
     def teacher_desc(self):
         return "Przy biurku stoi pan profesor %s." % self.teacher.mianownik
 
     def teacher_look(self):
         return self.teacher_desc()
+
+    def enter(self, state):
+        if state.time < self.start + self.random:
+            if state.time >= self.start:
+                hprint("^Spóźniłeś się odrobinę, ale lekcja jeszcze się nie zaczęła.^ ")
+            hprint("Siadasz w ławce i czekasz na rozpoczęcie lekcji.^\n")
+            state.time = self.start + self.random
+        else:
+            hprint("Ogłaszasz swoje przybycie: Dzień dobry i przepraszam za spóźnienie.^\n", 'yellow')
+            hprint("Spóźniłeś się.^ ")
+            if k100(self.late):
+                hprint("Dostajesz spóźnienie do dziennika.^\n")
+                state.player.spoznienia += 1
+            else:
+                hprint("Upiekło ci się.^^\n")
+
+    def exit(self, state):
+        lek, brk = mtl(state.time)
+        if not brk:
+            return True
+
+        hprint("%s mówi: A ty gdzie się wybierasz, %s?^\n" % (self.teacher.mianownik,
+            state.player.imie.mianownik), 'yellow')
+        hprint("Wracasz się do ławki.\n")
+        return False
 
 
 class Matematyka(Lesson):
@@ -79,8 +110,8 @@ def curless(table, hr, start):
 
 class Lament1(TimeTable):
     table = [
-            [ Matematyka(9, 3), WF(100, 1),
-                Historia(9, 1), Informatyka(23, 2) ],
+            [ Matematyka(9, 3, 1), WF(100, 1, 4),
+                Historia(9, 1, 5), Informatyka(23, 2, 6) ],
             [],
             [],
             [],
