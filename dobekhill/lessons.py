@@ -44,6 +44,9 @@ class Lesson:
         hprint("Wracasz się do ławki.\n")
         return False
 
+    def quote(self):
+            return False
+
 
 class Matematyka(Lesson):
     name = Noun("matematyka", "matematyki", n="matematyką")
@@ -52,6 +55,28 @@ class Matematyka(Lesson):
     def __init__(self, *args, **kwargs):
         Lesson.__init__(self, *args, **kwargs)
 
+    def teacher_look(self):
+        return """Widzisz łysygo człowieka o bujnej fryzurze. Blask jego majestatu oświetla twoje wewnętrze matematyczne oko, wykluczając je z dziedziny.
+Za uchem schowany ma krzywik, a z kieszeni wystaje okładka na której widnieje nieco starty napis *PAWŁOWSKI*."""
+
+    def quote(self):
+        base = [ "bo tu jest taka ukryta kolumna",
+                "ty nie masz tu prawa głosu, ty weź dupę w troki i do roboty",
+                "ja to bym te wszystkie ferie zlikwidował",
+                "te uprawnienia laureata ci zostaja na nastepny rok jak nie zdasz?",
+                "ja cię nie przepuszczę do następnej klasy",
+                "i tu stosujemy taki myk",
+                "w tej klasie to ze 30% osób cokolwiek robi",
+                "jakbyśmy byli u mnie w szkole to bym cię wypieprzył z klasy",
+                "na ostatniej wejściówce nikt nie zapunktował",
+                "wyciągnijcie kartki, napiszemy sobie pracę własną",
+                "to na jutrzejszą lekcję obejrzyjcie sobie 2 wykłady, nie są długie, pół godziny każdy"
+        ]
+
+        hprint("\nSzymon Dobecki mówi: (…) %s.\n" % random.choice(base), 'yellow')
+
+        return True
+         
 
 class WF(Lesson):
     name = Noun("WF", "WF-u", n="WF-em")
@@ -60,6 +85,9 @@ class WF(Lesson):
     def __init__(self, *args, **kwargs):
         Lesson.__init__(self, *args, **kwargs)
 
+    def teacher_look(self):
+        return """Z całych sił próbujesz dostrzec charakterystyczne cechy najlepszego wuefisty, lecz jego prędkość względem twojej jest zbyt wysoka.
+(Interakcja z postacią jest niemożliwa.)"""
 
 class Historia(Lesson):
     name = Noun("historia", "historii", n="historią")
@@ -71,8 +99,8 @@ class Historia(Lesson):
 
 class Informatyka(Lesson):
     name = Noun("informatyka", "informatyki", n="informatyką")
-    teacher = Noun("Ryszard „Prezes” Szubartowski", "Ryszardem „Prezesem” Szubartowskim",
-            n="Ryszarda „Prezesa” Szubartowskiego")
+    teacher = Noun("Ryszard „Prezes” Szubartowski", b="Ryszardem „Prezesem” Szubartowskim",
+            d="Ryszarda „Prezesa” Szubartowskiego")
 
     def __init__(self, *args, **kwargs):
         Lesson.__init__(self, *args, **kwargs)
