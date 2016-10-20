@@ -170,7 +170,7 @@ class Wejście(Location):
 class SekretariatHol(Location):
     name = "Hol przy sekretariacie"
     desc = """Nad swoją głową możesz podziwiać listy miast i wsi, z których przyjechali uczniowie, a także krajów, do których rozjechali się po ukończeniu szkoły. W gablotach znajdują się informacje o najnowszych osiągnięciach twoich kolegów. Może ty też się kiedyś znajdziesz pośród nich…
-Na północy znajduje się główny hol, na południu sekretariat, a na górze gniazdo biol-chemu. Możesz też zejść po shodach do głównego wejścia."""
+Na północy znajduje się główny hol, na południu sekretariat, a na górze gniazdo biol-chemu. Możesz też zejść po schodach do głównego wejścia."""
 
     directions = [ dirs["N"], dirs["S"], dirs["UP"], dirs["DOWN"] ]
     def __init__(self):
