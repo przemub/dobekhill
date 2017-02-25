@@ -16,5 +16,5 @@ config = {
     'name': 'dobekhill'
 }
 
-setup(**config)
+setup(**config, install_requires=['termcolor'])
 

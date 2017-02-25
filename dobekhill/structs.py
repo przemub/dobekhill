@@ -20,7 +20,7 @@ class State:
         self.location = None
         self.tutorial = True
 
-        self.time = 7*60+47
+        self.time = 7 * 60 + 47
         self.week = 1
         self.weekday = 0
 
@@ -30,14 +30,14 @@ class State:
         self.hp = 55
         self.dp = 34
 
-    def addTime(self, t):
+    def add_time(self, t):
         self.time += t
 
 
 class Noun:
     def __init__(self, m, d=None, b=None, c=None,
-                    n=None, msc=None, wol=None,
-                    alias=[]):
+                 n=None, msc=None, wol=None,
+                 alias=None):
         self.mianownik = m
         self.dopelniacz = d if d else m
         self.biernik = b if b else m
@@ -46,8 +46,9 @@ class Noun:
         self.miejscownik = msc if msc else m
         self.wolacz = wol if wol else m
 
-        self.alias = m.split() + alias
+        self.alias = m.split()
+        if alias:
+            self.alias += alias
 
     def __repr__(self):
         return self.mianownik
-
