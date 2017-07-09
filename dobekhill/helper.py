@@ -10,6 +10,8 @@ SKIP = True
 def hprint(s, col=None, a=(), delay=0):
     count = 0
     color = col
+    if col == 'black':
+        color = None
     bold = False
 
     delaylong = delay * 5 if delay > 0 or SKIP else 0.5
@@ -51,6 +53,8 @@ def hprint(s, col=None, a=(), delay=0):
         if delay != 0:
             sys.stdout.flush()
             time.sleep(delay)
+
+    sys.stdout.flush()
 
 
 def cont():

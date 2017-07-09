@@ -6,12 +6,14 @@ import threading
 import sys
 import pickle
 import os
+import redis
 
 import locations
 from helper import cont, hprint
 from lessons import ttm, Lament1
 from locations import dirs
 from structs import State, Player
+from server.client import Client
 
 
 # noinspection PyUnusedLocal
@@ -20,6 +22,7 @@ class HillShell:
 
     commands = []
     s = None
+    c = None
 
     def do_patrz(self, arg):
         if len(arg) == 0:
@@ -43,12 +46,12 @@ Wyświetla opis pomieszczenia lub podanego przedmiotu.
 """
 
     # Kierunki
-
     def move(self, direction):
         if self.s.location.move(self.s, direction):
+            if self.multi:
+                self.c.update(self.s)
             self.desc()
             self.s.location.entered(self.s)
-            print()
         else:
             hprint("Nie ma wyjścia w tym kierunku.\n")
 
@@ -81,6 +84,33 @@ Wyświetla opis pomieszczenia lub podanego przedmiotu.
 
     def do_dół(self, arg):
         self.move(dirs["DOWN"])
+
+    # Komunikacja
+
+    def do_mów(self, arg):
+        wiad = " ".join(arg)
+        self.c.thread.submit(self.s.location.id(), "%s %s mówi: „%s”.\n" % (self.gracz.imie, self.gracz.nazwisko, wiad),
+                             'yellow')
+        hprint("Mówisz: „%s”.\n" % (wiad,), 'yellow')
+
+    def do_krzycz(self, arg):
+        wiad = " ".join(arg)
+        self.c.thread.submit("all", "%s %s krzyczy: „%s”!\n" % (self.gracz.imie, self.gracz.nazwisko, wiad), 'yellow')
+        hprint("Krzyczysz: „%s”!\n" % (wiad,), 'yellow')
+
+    def do_beknij(self, arg):
+        jak = arg[0] if len(arg) > 0 else "transcendentalnie"
+
+        self.c.thread.submit("all", "%s %s beka %s.\n" % (self.gracz.imie, self.gracz.nazwisko, jak), 'yellow')
+        hprint("Bekasz %s.\n" % (jak,))
+
+    def do_rób(self, arg):
+        if len(arg) < 2:
+            return
+
+        wiad = " ".join(arg)
+        self.c.thread.submit("all", "%s %s %s.\n" % (self.gracz.imie, self.gracz.nazwisko, wiad), 'yellow')
+        hprint("%ssz %s.\n" % (arg[0], arg[1]), 'yellow')
 
     def do_legitymacja(self, arg):
         karta = """
@@ -176,8 +206,13 @@ Wyświetla pomoc powiązaną z podanym poleceniem lub listę poleceń.
         hprint("Dodano Twe losy do scenariusza filmu „F jak wtorek”.\n")
 
     def do_wyjdź(self, arg):
+        self.do_zapisz("")
         hprint("Do zobaczenia w świecie Dobek Hill!\n")
         self.event.tak_zabij_sie()
+
+        if self.multi:
+            self.c.logout(self.gracz)
+
         raise self.ExitException()
 
     do_wyjdź.help = """Składnia: wyjdź
@@ -213,6 +248,17 @@ Wychodzi ze świata Dobek Hill.
         def tak_zabij_sie(self):
             self.zabijSie = True
 
+    def do_kto(self, args):
+        if not self.multi:
+            return
+
+        gracze = self.c.players()
+
+        hprint("W Gdyńskiej Trójce obecnie przesiadują:\n")
+        for gracz in gracze:
+            hprint("%s %s\n" % (gracz.imie, gracz.nazwisko))
+
+
     def start(self, state=State()):
         self.commands = [func for func in dir(self)
                          if callable(getattr(self, func)) and func[:3] == "do_"]
@@ -221,6 +267,16 @@ Wychodzi ze świata Dobek Hill.
         self.s.player = self.gracz
 
         random.seed()
+
+        r = redis.StrictRedis(host='localhost', port=6379, db=0)
+        try:
+            r.ping()
+            self.multi = True
+            self.c = Client(r, self)
+            self.c.login(self.s)
+        except redis.exceptions.ConnectionError as re:
+            hprint("Brak połączenia z serwerem. Uruchamiam tryb jednoosobowy.")
+            self.multi = False
 
         # noinspection PyAttributeOutsideInit
         self.event = self.EventThread(self.s, self)
@@ -263,6 +319,7 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
         hprint("\n")
         self.desc()
         self.loop()
+        self.c.update(self.s)
 
     def desc(self):
         hprint(self.s.location.name + "\n", 'blue')
@@ -283,6 +340,9 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
         for item in self.s.location.get_items():
             if item.list:
                 hprint("\t" + item.desc + "\n", 'green')
+        for s in self.c.players_in(self.s.location):
+            if s.player.id != self.gracz.id:
+                hprint("\tStoi tu %s %s.\n" % (s.player.imie, s.player.nazwisko), 'red')
 
         hprint(self.s.level.status(self.s) + "\n", 'magenta')
 
@@ -324,6 +384,7 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
 
 
 if __name__ == "__main__":
+    from main import load
+
     SKIP = True
-    hill = HillShell()
-    hill.start()
+    load()

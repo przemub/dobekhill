@@ -47,6 +47,9 @@ class Location:
         state.add_time(delay)
         return True
 
+    def id(self):
+        return type(self).__name__
+
 
 class Item:
     name = Noun("przedmiot")
