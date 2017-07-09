@@ -1,8 +1,14 @@
+import uuid
+
 class Player:
     def __init__(self, default=False):
+        # Dane gry
+        self.id = uuid.uuid4().int
+
         # Cechy
         self.imie = Noun("Karol") if default else None
         self.nazwisko = Noun("Baryła") if default else None
+        self.wiek = 17
 
         self.ulub = "i" if default else None
         self.uslab = "m" if default else None
@@ -10,7 +16,14 @@ class Player:
         self.slaby = "p" if default else None
 
         # Statystyki
+        self.inte = 0
+        self.sila = 0
+        self.spra = 0
+        self.szcz = 0
+
         self.spoznienia = 0
+        self.np = 0
+        self.wagary = 0
 
 
 class State:
@@ -32,6 +45,13 @@ class State:
 
     def add_time(self, t):
         self.time += t
+
+    def mod_hp(self, m):
+        self.hp += m
+        if hp > 100:
+            self.hp = 100
+        elif hp < 0:
+            self.hp = 0
 
 
 class Noun:

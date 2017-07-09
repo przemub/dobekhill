@@ -4,12 +4,14 @@ import time
 import random
 import threading
 import sys
+import pickle
+import os
 
-from dobekhill import locations
-from dobekhill.helper import cont, hprint
-from dobekhill.lessons import ttm, Lament1
-from dobekhill.locations import dirs
-from dobekhill.structs import State, Player
+import locations
+from helper import cont, hprint
+from lessons import ttm, Lament1
+from locations import dirs
+from structs import State, Player
 
 
 # noinspection PyUnusedLocal
@@ -39,6 +41,8 @@ class HillShell:
 Składnia: patrz <przedmiot>
 Wyświetla opis pomieszczenia lub podanego przedmiotu.
 """
+
+    # Kierunki
 
     def move(self, direction):
         if self.s.location.move(self.s, direction):
@@ -77,6 +81,25 @@ Wyświetla opis pomieszczenia lub podanego przedmiotu.
 
     def do_dół(self, arg):
         self.move(dirs["DOWN"])
+
+    def do_legitymacja(self, arg):
+        karta = """
+%s, lat %d
+  ----------------------------
+ /         LEGITYMACJA SZKOLNA \\
+|  HP:   %3d%%   DP:     %3d%%   |
+|                              |
+|  INTE: %2d    spóźn.: %2d      |
+|  SIŁA: %2d    np.:    %2d      |
+|  SPRA: %2d    wagary: %2d      |
+ \ SZCZ: %2d                   /
+  ----------------------------
+""" % (self.gracz.imie.mianownik + " " + self.gracz.nazwisko.mianownik, self.gracz.wiek,
+       self.s.hp, self.s.dp, self.gracz.inte, self.gracz.spoznienia, self.gracz.sila, self.gracz.np,
+       self.gracz.spra, self.gracz.wagary, self.gracz.szcz)
+
+        hprint("Oglądasz swoją legitymację, dowód, że należysz do społeczności Gdyńskiej Trójki.\n")
+        hprint(karta)
 
     def do_tutorial(self, arg):
         if len(arg) == 0:
@@ -139,6 +162,18 @@ Wyświetla pomoc powiązaną z podanym poleceniem lub listę poleceń.
             self.s.time = int(arg[0])
         elif len(arg) == 2:
             self.s.time = ttm(int(arg[0]), int(arg[1]))
+
+    def do_zapisz(self, arg):
+        dir = os.path.expanduser("~/.dobekhill")
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+
+        with open(dir + '/gracz', 'wb') as out:
+            pickle.dump(self.gracz, out, -1)
+        with open(dir + '/stan', 'wb') as out:
+            pickle.dump(self.s, out, -1)
+
+        hprint("Dodano Twe losy do scenariusza filmu „F jak wtorek”.\n")
 
     def do_wyjdź(self, arg):
         hprint("Do zobaczenia w świecie Dobek Hill!\n")
@@ -223,8 +258,11 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
 
             self.s.location = locations.Front()
             self.s.level = Lament1()
-            self.desc()
-            self.loop()
+            self.s.tutorial = 0
+
+        hprint("\n")
+        self.desc()
+        self.loop()
 
     def desc(self):
         hprint(self.s.location.name + "\n", 'blue')

@@ -1,5 +1,5 @@
-from dobekhill.structs import Noun
-from dobekhill.helper import hprint
+from structs import Noun
+from helper import hprint
 
 import time
 import random
@@ -285,6 +285,7 @@ class Sala(Location):
         self.directions = direction
 
     def _set(self, lesson):
+        print(lesson, lesson.name, lesson.name.dopelniacz, lesson.teacher)
         self.desc = self.desc % (self.nr, lesson.name.dopelniacz,
                                  lesson.teacher.narzednik)
 
@@ -294,6 +295,7 @@ class Sala(Location):
         teacher.look = lesson.teacher_look()
         self.ex_items = [teacher]
         self.quote = lesson.quote
+        self.actions = lesson.actions()
 
     def dyn_items(self):
         return self.ex_items
@@ -305,6 +307,7 @@ class Sala(Location):
 
         hprint("Pukasz lekko i otwierasz drzwi.\n")
         self._set(state.lesson)
+        state.lesson.state = state
 
         return False
 

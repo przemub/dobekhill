@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-from dobekhill.helper import hprint, cont
-from dobekhill.structs import Player, Noun
-from dobekhill.game import HillShell
+from helper import hprint, cont
+from structs import Player, Noun
+from game import HillShell
+
+import os
+import pickle
 
 HILL = """
     ___  ___  ___    __               _____  __    __  
@@ -114,6 +117,21 @@ def new():
         shell.start()
 
 
+def load():
+    dir = os.path.expanduser("~/.dobekhill")
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+    shell = HillShell()
+
+    with open(dir + '/gracz', 'rb') as data:
+        shell.gracz = pickle.load(data)
+    with open(dir + '/stan', 'rb') as data:
+        stan = pickle.load(data)
+
+    shell.start(stan)
+
+
 def main():
     print(HILL)
 
@@ -125,11 +143,12 @@ def main():
         w = input()
 
         if w[0].lower() == 'n':
+            new()
             wybor = 0
-        elif w[0].lower == 'k':
-            wybor = 1
 
-    new()
+        elif w[0].lower() == 'k':
+            load()
+            wybor = 1
 
 
 if __name__ == '__main__':
