@@ -48,9 +48,9 @@ class State:
 
     def mod_hp(self, m):
         self.hp += m
-        if hp > 100:
+        if self.hp > 100:
             self.hp = 100
-        elif hp < 0:
+        elif self.hp < 0:
             self.hp = 0
 
 
