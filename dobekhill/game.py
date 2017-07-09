@@ -101,7 +101,8 @@ Wyświetla opis pomieszczenia lub podanego przedmiotu.
     def do_beknij(self, arg):
         jak = arg[0] if len(arg) > 0 else "transcendentalnie"
 
-        self.c.thread.submit("all", "%s %s beka %s.\n" % (self.gracz.imie, self.gracz.nazwisko, jak), 'yellow')
+        self.c.thread.submit(self.s.location.id(), "%s %s beka %s.\n" % (self.gracz.imie, self.gracz.nazwisko, jak),
+                             'yellow')
         hprint("Bekasz %s.\n" % (jak,))
 
     def do_rób(self, arg):
@@ -109,7 +110,7 @@ Wyświetla opis pomieszczenia lub podanego przedmiotu.
             return
 
         wiad = " ".join(arg)
-        self.c.thread.submit("all", "%s %s %s.\n" % (self.gracz.imie, self.gracz.nazwisko, wiad), 'yellow')
+        self.c.thread.submit(self.s.location.id(), "%s %s %s.\n" % (self.gracz.imie, self.gracz.nazwisko, wiad), 'yellow')
         hprint("%ssz %s.\n" % (arg[0], arg[1]), 'yellow')
 
     def do_legitymacja(self, arg):
