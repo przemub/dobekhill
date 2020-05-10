@@ -7,6 +7,8 @@ import sys
 import pickle
 import os
 import redis
+import readline
+import termcolor
 
 import locations
 from helper import cont, hprint
@@ -346,16 +348,14 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
 
     def prompt(self):
         prompt = "(%02d:%02d %d%%hp %d%%dp) " % (self.s.time // 60, self.s.time % 60, self.s.hp, self.s.dp)
-        hprint(prompt, 'cyan')
+        return termcolor.colored(prompt, 'cyan')
 
     def loop(self):
         while True:
-            self.prompt()
-
             try:
-                comm = input()
+                comm = input(self.prompt())
             except UnicodeDecodeError:
-                hprint("W jakim języku ty do mnie przemawiasz?\n")
+                hprint("W jakim języku ty do mnie przemawiasz? (Błąd dekodowania. Spróbuj jeszcze raz.\n")
                 continue
 
             comm = comm.split()
