@@ -7,8 +7,15 @@ import time
 
 
 class Lesson:
+    @property
+    def name(self):
+        raise NotImplementedError
+
+    @property
+    def teacher(self):
+        raise NotImplementedError
+
     def __init__(self, *args, **kwargs):
-        self.teacher = None
         self.classroom = args[0]
         self.length = args[1]
         self.start = args[2]
@@ -53,30 +60,39 @@ class Lesson:
 
     def koniec(self):
         hprint("Zadzwonił dzwonek na koniec lekcji.")
-        self.state.time = self.start + 45
+        self.state.time = table[self.start-1] + 45
 
-    def śpij(self):
+    def śpij(self, *args):
         hprint("Nie masz siły, żeby żyć, a co dopiero, by uważać na lekcji. Zawieszasz wzrok na %s i zasypiasz…" %
                self.teacher.miejscownik)
         time.sleep(2)
 
         if k100(30):
-            hprint("Nauczyciel zauważył twoją nieprzytomność. Dostaniesz ocenę niedostateczną.")
+            hprint("Nauczyciel zauważył twoją nieprzytomność. Dostaniesz ocenę niedostateczną.\n")
             self.state.mod_dp(-random.randint(1, 5))
-        hprint("Co nieco odespałeś.")
+        else:
+            hprint("Nauczyciel był zajęty przepytywaniem kogoś innego. Upiekło ci się!\n")
+        hprint("Co nieco odespałeś.\n")
         self.state.mod_hp(random.randint(5, 10))
 
         self.koniec()
 
     śpij.name = "śpij"
 
+    def słuchaj(self, *args):
+        hprint("Nie udawaj, chce ci się spać. (Słuchanie niezaimplementowane.)\n")
+        return self.śpij()
+
+    słuchaj.name = "słuchaj"
+
     def actions(self):
-        return [self.śpij]
+        return [self.śpij, self.słuchaj]
 
 
 class Matematyka(Lesson):
     name = Noun("matematyka", "matematyki", n="matematyką")
-    teacher = Noun("Szymon Dobecki", "Szymona Dobeckiego", n="Szymonem Dobeckim")
+    teacher = Noun("Szymon Dobecki", "Szymona Dobeckiego", n="Szymonem Dobeckim",
+            msc="Szymonie Dobeckim")
 
     def __init__(self, *args, **kwargs):
         Lesson.__init__(self, *args, **kwargs)

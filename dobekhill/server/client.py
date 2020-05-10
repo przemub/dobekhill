@@ -2,7 +2,6 @@ from helper import hprint, cont
 
 import pickle
 import threading
-import redis
 
 
 class only_multi:

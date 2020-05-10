@@ -352,7 +352,12 @@ Wszelkie podobieństwo do osób rzeczywistych jest przypadkowe.\n\n""", delay=0.
         while True:
             self.prompt()
 
-            comm = input()
+            try:
+                comm = input()
+            except UnicodeDecodeError:
+                hprint("W jakim języku ty do mnie przemawiasz?\n")
+                continue
+
             comm = comm.split()
             if len(comm) == 0:
                 continue

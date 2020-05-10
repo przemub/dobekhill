@@ -53,6 +53,13 @@ class State:
         elif self.hp < 0:
             self.hp = 0
 
+    def mod_dp(self, m):
+        self.dp += m
+        if self.dp > 100:
+            self.dp = 100
+        elif self.dp < 0:
+            self.dp = 0
+
 
 class Noun:
     def __init__(self, m, d=None, b=None, c=None,

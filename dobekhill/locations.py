@@ -370,7 +370,7 @@ tym, że powinieneś teraz zajmować się szkołą…"""
     class BobEnd(Exception):
         pass
 
-    def śpij(self):
+    def śpij(self, *args):
         hprint("\nZasypiasz. Nieważne, że właśnie trwają lekcje…\n")
         time.sleep(1)
 
