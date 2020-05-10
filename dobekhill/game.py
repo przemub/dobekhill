@@ -48,8 +48,7 @@ Wyświetla opis pomieszczenia lub podanego przedmiotu.
     # Kierunki
     def move(self, direction):
         if self.s.location.move(self.s, direction):
-            if self.multi:
-                self.c.update(self.s)
+            self.c.update(self.s)
             self.desc()
             self.s.location.entered(self.s)
         else:
@@ -211,8 +210,7 @@ Wyświetla pomoc powiązaną z podanym poleceniem lub listę poleceń.
         hprint("Do zobaczenia w świecie Dobek Hill!\n")
         self.event.tak_zabij_sie()
 
-        if self.multi:
-            self.c.logout(self.gracz)
+        self.c.logout(self.gracz)
 
         raise self.ExitException()
 
@@ -250,9 +248,6 @@ Wychodzi ze świata Dobek Hill.
             self.zabijSie = True
 
     def do_kto(self, args):
-        if not self.multi:
-            return
-
         gracze = self.c.players()
 
         hprint("W Gdyńskiej Trójce obecnie przesiadują:\n")
@@ -272,12 +267,11 @@ Wychodzi ze świata Dobek Hill.
         r = redis.StrictRedis(host='localhost', port=6379, db=0)
         try:
             r.ping()
-            self.multi = True
-            self.c = Client(r, self)
+            self.c = Client(True, r, self)
             self.c.login(self.s)
         except redis.exceptions.ConnectionError as re:
-            hprint("Brak połączenia z serwerem. Uruchamiam tryb jednoosobowy.")
-            self.multi = False
+            hprint("Brak połączenia z serwerem. Uruchamiam tryb jednoosobowy.\n")
+            self.c = Client(False, r, self)
 
         # noinspection PyAttributeOutsideInit
         self.event = self.EventThread(self.s, self)
