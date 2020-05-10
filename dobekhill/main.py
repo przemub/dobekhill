@@ -19,6 +19,9 @@ witaj = """
 Witaj w świecie Dobek Hill.
 Tylko w tej grze możesz wygrać w grze, jaką jest uczęszczanie do gdyńskiej Trójki. Powodzenia!
 
+Copyright (c) 2016-20 Przemek Buczkowski (https://1mi.pl/~przemub)
+Wejdź na https://github.com/przemub/dobekhill/ i rozwijaj grę!
+
 ---
 
 - (*N*)owa gra
